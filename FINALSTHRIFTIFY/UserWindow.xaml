@@ -6,7 +6,8 @@
         Height="746" Width="344"
         WindowStartupLocation="CenterScreen"
         ResizeMode="NoResize"
-        Background="#5F9F7B">
+        x:Name="MainUserWindow"
+        Background="{Binding Background, ElementName=MainUserWindow, FallbackValue=#5F9F7B}">
     <Window.Resources>
         <Style x:Key="RoundButtonStyle" TargetType="Button">
             <Setter Property="Background" Value="#8FD398"/>
