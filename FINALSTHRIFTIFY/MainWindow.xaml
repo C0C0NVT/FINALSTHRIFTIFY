@@ -1,0 +1,97 @@
+﻿<Window x:Class="FINALSTHRIFTIFY.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Thriftify - Login" 
+        Height="746" Width="344"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="NoResize"
+        Background="#5F9F7B">
+    <Window.Resources>
+        <Style x:Key="RoundButtonStyle" TargetType="Button">
+            <Setter Property="Background">
+                <Setter.Value>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                        <GradientStop Color="#45A176" Offset="0"/>
+                        <GradientStop Color="#193B2B" Offset="1"/>
+                    </LinearGradientBrush>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="12"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="25">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="RoundedTextBoxStyle" TargetType="TextBox">
+            <Setter Property="Background" Value="#F5F5F5"/>
+            <Setter Property="Foreground" Value="#333333"/>
+            <Setter Property="BorderBrush" Value="#A3E4D7"/>
+            <Setter Property="BorderThickness" Value="2"/>
+            <Setter Property="Padding" Value="10"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="Height" Value="45"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border Background="{TemplateBinding Background}" 
+                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="25">
+                            <ScrollViewer x:Name="PART_ContentHost" Margin="{TemplateBinding Padding}"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Width="300">
+            <TextBlock Text="Thriftify" 
+                       Foreground="White" 
+                       FontSize="32" 
+                       FontWeight="Bold" 
+                       HorizontalAlignment="Center"
+                       Margin="0,0,0,30"/>
+
+            <TextBlock Text="A MOBILE BUDGETING APP" 
+                       Foreground="#A3E4D7" 
+                       FontSize="16"
+                       HorizontalAlignment="Center"
+                       Margin="0,0,0,40"/>
+
+            <TextBox x:Name="UsernameTextBox" 
+                     Margin="0,0,0,20"
+                     Text=""
+                     Foreground="#333333" Height="26"/>
+
+            <PasswordBox x:Name="PasswordBox" 
+                         Margin="0,0,0,20" Height="30"/>
+
+            <Button x:Name="LoginButton" 
+                    Content="SIGN IN" 
+                    Style="{StaticResource RoundButtonStyle}"
+                    Height="50" 
+                    Margin="0,0,0,15"
+                    Click="LoginButton_Click"/>
+
+            <TextBlock x:Name="ErrorTextBlock" 
+                       Foreground="#FF6B6B" 
+                       TextWrapping="Wrap"
+                       Margin="0,15,0,0"
+                       FontSize="14"
+                       HorizontalAlignment="Center"
+                       Visibility="Collapsed"/>
+        </StackPanel>
+    </Grid>
+</Window>

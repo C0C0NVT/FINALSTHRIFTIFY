@@ -1,0 +1,62 @@
+﻿<?xml version="1.0" encoding="utf-8"?><Database Name="FinalProject" Class="ThriftifyDataContextDataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
+  <Connection Mode="AppSettings" ConnectionString="Data Source=LAPTOP-0CF0PPA4\SQLEXPRESS;Initial Catalog=FinalProject;Integrated Security=True;Encrypt=True;Trust Server Certificate=True" SettingsObjectName="FINALSTHRIFTIFY.Properties.Settings" SettingsPropertyName="FinalProjectConnectionString1" Provider="System.Data.SqlClient" />
+  <Table Name="dbo.Categories" Member="Categories">
+    <Type Name="Category">
+      <Column Name="category_id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="category_name" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="category_type" Type="System.String" DbType="NVarChar(20) NOT NULL" CanBeNull="false" />
+      <Association Name="Category_Transaction" Member="Transactions" ThisKey="category_id" OtherKey="category_id" Type="Transaction" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Transactions" Member="Transactions">
+    <Type Name="Transaction">
+      <Column Name="transaction_id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="wallet_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="category_id" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="transaction_type" Type="System.String" DbType="NVarChar(10) NOT NULL" CanBeNull="false" />
+      <Column Name="amount" Type="System.Decimal" DbType="Decimal(15,2) NOT NULL" CanBeNull="false" />
+      <Column Name="description" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
+      <Column Name="transaction_date" Type="System.DateTime" DbType="DateTime2" CanBeNull="true" />
+      <Column Name="is_active" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Association Name="Category_Transaction" Member="Category" ThisKey="category_id" OtherKey="category_id" Type="Category" IsForeignKey="true" />
+      <Association Name="Wallet_Transaction" Member="Wallet" ThisKey="wallet_id" OtherKey="wallet_id" Type="Wallet" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Users" Member="Users">
+    <Type Name="User">
+      <Column Name="user_id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="username" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="email" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="password" Type="System.String" DbType="NVarChar(255) NOT NULL" CanBeNull="false" />
+      <Column Name="user_type" Type="System.String" DbType="NVarChar(20) NOT NULL" CanBeNull="false" />
+      <Column Name="is_active" Type="System.Boolean" DbType="Bit NOT NULL" CanBeNull="false" />
+      <Column Name="created_at" Type="System.DateTime" DbType="DateTime2" CanBeNull="true" />
+      <Association Name="User_Wallet" Member="Wallets" ThisKey="user_id" OtherKey="user_id" Type="Wallet" />
+    </Type>
+  </Table>
+  <Table Name="dbo.Wallets" Member="Wallets">
+    <Type Name="Wallet">
+      <Column Name="wallet_id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="user_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="wallet_name" Type="System.String" DbType="NVarChar(100) NOT NULL" CanBeNull="false" />
+      <Column Name="current_balance" Type="System.Decimal" DbType="Decimal(15,2)" CanBeNull="true" />
+      <Column Name="is_active" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="created_at" Type="System.DateTime" DbType="DateTime2" CanBeNull="true" />
+      <Association Name="Wallet_Transaction" Member="Transactions" ThisKey="wallet_id" OtherKey="wallet_id" Type="Transaction" />
+      <Association Name="Wallet_WalletAdjustment" Member="WalletAdjustments" ThisKey="wallet_id" OtherKey="wallet_id" Type="WalletAdjustment" />
+      <Association Name="User_Wallet" Member="User" ThisKey="user_id" OtherKey="user_id" Type="User" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.WalletAdjustments" Member="WalletAdjustments">
+    <Type Name="WalletAdjustment">
+      <Column Name="adjustment_id" Type="System.Int32" DbType="Int NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="wallet_id" Type="System.Int32" DbType="Int NOT NULL" CanBeNull="false" />
+      <Column Name="adjustment_type" Type="System.String" DbType="NVarChar(10) NOT NULL" CanBeNull="false" />
+      <Column Name="adjustment_amount" Type="System.Decimal" DbType="Decimal(15,2) NOT NULL" CanBeNull="false" />
+      <Column Name="description" Type="System.String" DbType="NVarChar(255)" CanBeNull="true" />
+      <Column Name="adjustment_date" Type="System.DateTime" DbType="DateTime2" CanBeNull="true" />
+      <Column Name="is_active" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Association Name="Wallet_WalletAdjustment" Member="Wallet" ThisKey="wallet_id" OtherKey="wallet_id" Type="Wallet" IsForeignKey="true" />
+    </Type>
+  </Table>
+</Database>

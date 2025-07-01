@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.36105.23
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FINALSTHRIFTIFY", "FINALSTHRIFTIFY\FINALSTHRIFTIFY.csproj", "{0C4F28B7-4B19-43CB-ADFF-CF03D26AE7D1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ThriftifyAPI", "ThriftifyAPI\ThriftifyAPI.csproj", "{36C34F66-C7D9-4A9F-8F06-4750C38A52C9}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0C4F28B7-4B19-43CB-ADFF-CF03D26AE7D1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0C4F28B7-4B19-43CB-ADFF-CF03D26AE7D1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0C4F28B7-4B19-43CB-ADFF-CF03D26AE7D1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0C4F28B7-4B19-43CB-ADFF-CF03D26AE7D1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{36C34F66-C7D9-4A9F-8F06-4750C38A52C9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{36C34F66-C7D9-4A9F-8F06-4750C38A52C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{36C34F66-C7D9-4A9F-8F06-4750C38A52C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{36C34F66-C7D9-4A9F-8F06-4750C38A52C9}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {4386A40F-CA67-4365-BD86-617B7CEA26E9}
+	EndGlobalSection
+EndGlobal
