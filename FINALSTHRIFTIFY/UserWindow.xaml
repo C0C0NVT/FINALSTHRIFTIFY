@@ -28,7 +28,7 @@
 
         <Style x:Key="NavButtonStyle" TargetType="Button">
             <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Foreground" Value="#B0B0B0"/>
             <Setter Property="BorderBrush" Value="Transparent"/>
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="Padding" Value="5"/>
@@ -40,13 +40,56 @@
                         <Border Background="{TemplateBinding Background}">
                             <StackPanel>
                                 <TextBlock Text="{TemplateBinding Tag}" FontSize="20" 
-                                           HorizontalAlignment="Center" Margin="0,0,0,3"/>
+                                           HorizontalAlignment="Center" Margin="0,0,0,3"
+                                           Foreground="{TemplateBinding Foreground}"/>
                                 <ContentPresenter HorizontalAlignment="Center"/>
                             </StackPanel>
                         </Border>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="#557A5F"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="ActiveNavButtonStyle" TargetType="Button" BasedOn="{StaticResource NavButtonStyle}">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Background" Value="#557A5F"/>
+        </Style>
+
+        <Style x:Key="MenuItemStyle" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="#333333"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="15,12"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{TemplateBinding Tag}" FontSize="16" 
+                                           VerticalAlignment="Center" Margin="0,0,12,0"/>
+                                <ContentPresenter VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#F0F0F0"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="#E0E0E0"/>
+                </Trigger>
+            </Style.Triggers>
         </Style>
 
         <Style x:Key="WalletButtonStyle" TargetType="Button">
@@ -89,8 +132,8 @@
             </StackPanel>
         </Border>
 
-        <TabControl Grid.Row="1" Background="#F5F5F5" BorderThickness="0">
-            <TabItem Header="Overview">
+        <TabControl x:Name="MainTabControl" Grid.Row="1" Background="#F5F5F5" BorderThickness="0">
+            <TabItem x:Name="OverviewTab" Header="Overview">
                 <ScrollViewer>
                     <StackPanel Margin="10">
                         <Border Background="#E8F5E9" CornerRadius="10" Padding="10" Margin="0,0,0,15">
@@ -161,7 +204,35 @@
                 </ScrollViewer>
             </TabItem>
 
-            <TabItem Header="Add Transaction">
+            <TabItem x:Name="HistoryTab" Header="History">
+                <ScrollViewer>
+                    <StackPanel Margin="10">
+                        <TextBlock Text="Transaction History" FontWeight="Bold" FontSize="16" Margin="0,0,0,15"/>
+                        <ListView x:Name="AllTransactionsListView" Height="400" BorderThickness="0">
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Background="White" CornerRadius="8" Padding="10" Margin="0,2">
+                                        <StackPanel>
+                                            <TextBlock>
+                                                <Run Text="{Binding transaction_type}" FontWeight="Bold"/>
+                                                <Run Text=" - "/>
+                                                <Run Text="{Binding description}" FontStyle="Italic"/>
+                                            </TextBlock>
+                                            <TextBlock>
+                                                <Run Text="{Binding transaction_date, StringFormat={}{0:MMM dd, yyyy}}"/>
+                                                <Run Text=" - "/>
+                                                <Run Text="{Binding amount, StringFormat={}{0:C}}"/>
+                                            </TextBlock>
+                                        </StackPanel>
+                                    </Border>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+            <TabItem x:Name="AddTransactionTab" Header="Add Transaction">
                 <ScrollViewer>
                     <StackPanel Margin="10">
                         <TextBlock Text="Add New Transaction" FontWeight="Bold" Margin="0,0,0,10"/>
@@ -186,6 +257,28 @@
                     </StackPanel>
                 </ScrollViewer>
             </TabItem>
+
+            <TabItem x:Name="BalanceTab" Header="Balance">
+                <ScrollViewer>
+                    <StackPanel Margin="10">
+                        <TextBlock Text="Wallet Balances" FontWeight="Bold" FontSize="16" Margin="0,0,0,15"/>
+                        <ListView x:Name="BalanceWalletsListView" Height="400" BorderThickness="0">
+                            <ListView.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Background="White" CornerRadius="10" Padding="15" Margin="0,5">
+                                        <StackPanel>
+                                            <TextBlock Text="{Binding wallet_name}" FontWeight="Bold" FontSize="16" Foreground="Green"/>
+                                            <TextBlock Text="Current Balance" FontSize="12" Foreground="Green" Opacity="0.8" Margin="0,5,0,0"/>
+                                            <TextBlock Text="{Binding current_balance, StringFormat={}{0:C}}" 
+                                                       FontSize="24" FontWeight="Bold" Foreground="Green"/>
+                                        </StackPanel>
+                                    </Border>
+                                </DataTemplate>
+                            </ListView.ItemTemplate>
+                        </ListView>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
         </TabControl>
 
         <Border Grid.Row="2" Background="#69886D">
@@ -198,12 +291,54 @@
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
 
-                <Button Grid.Column="0" Style="{StaticResource NavButtonStyle}" Tag="🏠" Content="Home"/>
-                <Button Grid.Column="1" Style="{StaticResource NavButtonStyle}" Tag="🕒" Content="History"/>
-                <Button Grid.Column="2" Style="{StaticResource NavButtonStyle}" Tag="➕" Content="Add"/>
-                <Button Grid.Column="3" Style="{StaticResource NavButtonStyle}" Tag="₱" Content="Balance"/>
-                <Button Grid.Column="4" Style="{StaticResource NavButtonStyle}" Tag="⚙️" Content="Settings"/>
+                <Button x:Name="HomeButton" Grid.Column="0" Style="{StaticResource ActiveNavButtonStyle}" 
+                        Tag="🏠" Content="Home" Click="NavButton_Click"/>
+                <Button x:Name="HistoryButton" Grid.Column="1" Style="{StaticResource NavButtonStyle}" 
+                        Tag="🕒" Content="History" Click="NavButton_Click"/>
+                <Button x:Name="AddButton" Grid.Column="2" Style="{StaticResource NavButtonStyle}" 
+                        Tag="➕" Content="Add" Click="NavButton_Click"/>
+                <Button x:Name="BalanceButton" Grid.Column="3" Style="{StaticResource NavButtonStyle}" 
+                        Tag="₱" Content="Balance" Click="NavButton_Click"/>
+                <Button x:Name="SettingsButton" Grid.Column="4" Style="{StaticResource NavButtonStyle}" 
+                        Tag="⚙️" Content="Settings" Click="SettingsButton_Click"/>
             </Grid>
         </Border>
+
+        <!-- Settings Menu Overlay -->
+        <Grid x:Name="SettingsOverlay" Grid.RowSpan="3" Background="#80000000" Visibility="Collapsed">
+            <Border Background="White" CornerRadius="10" MaxWidth="280" MaxHeight="300" 
+                    VerticalAlignment="Center" HorizontalAlignment="Center" Margin="20">
+                <StackPanel>
+                    <Border Background="#69886D" CornerRadius="10,10,0,0" Padding="15,10">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="⚙️" FontSize="18" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                            <TextBlock Text="Settings" FontSize="16" FontWeight="Bold" 
+                                       Foreground="White" VerticalAlignment="Center"/>
+                            <Button Content="✕" Background="Transparent" BorderThickness="0" 
+                                    Foreground="White" FontSize="16" FontWeight="Bold"
+                                    HorizontalAlignment="Right" Margin="80,0,0,0"
+                                    Click="CloseSettings_Click" Cursor="Hand"/>
+                        </StackPanel>
+                    </Border>
+                    
+                    <StackPanel Margin="0,10,0,0">
+                        <Button Style="{StaticResource MenuItemStyle}" Tag="🏥" Content="Help Center" 
+                                Click="HelpCenter_Click"/>
+                        <Separator Background="#E0E0E0" Height="1" Margin="15,0"/>
+                        
+                        <Button Style="{StaticResource MenuItemStyle}" Tag="⚠️" Content="Report a problem" 
+                                Click="ReportProblem_Click"/>
+                        <Separator Background="#E0E0E0" Height="1" Margin="15,0"/>
+                        
+                        <Button Style="{StaticResource MenuItemStyle}" Tag="📋" Content="Terms of Use" 
+                                Click="TermsOfUse_Click"/>
+                        <Separator Background="#E0E0E0" Height="1" Margin="15,0"/>
+                        
+                        <Button Style="{StaticResource MenuItemStyle}" Tag="⭐" Content="Rate the app" 
+                                Click="RateApp_Click"/>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+        </Grid>
     </Grid>
 </Window>

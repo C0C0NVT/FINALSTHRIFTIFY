@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Diagnostics;
 
 namespace FINALSTHRIFTIFY
 {
@@ -24,22 +25,102 @@ namespace FINALSTHRIFTIFY
         {
             using (var db = new ThriftifyDataContextDataContext())
             {
-                WalletsListView.ItemsSource = db.Wallets
+                var userWallets = db.Wallets
                     .Where(w => w.user_id == currentUser.user_id && w.is_active == true)
                     .ToList();
 
-                TransactionsListView.ItemsSource = db.Transactions
+                var userTransactions = db.Transactions
                     .Where(t => t.Wallet.user_id == currentUser.user_id && t.is_active == true)
                     .OrderByDescending(t => t.transaction_date)
-                    .Take(10)
                     .ToList();
 
-                WalletComboBox.ItemsSource = db.Wallets
-                    .Where(w => w.user_id == currentUser.user_id && w.is_active == true)
-                    .ToList();
+                // Overview tab data
+                WalletsListView.ItemsSource = userWallets;
+                TransactionsListView.ItemsSource = userTransactions.Take(10).ToList();
 
+                // History tab data
+                AllTransactionsListView.ItemsSource = userTransactions;
+
+                // Balance tab data
+                BalanceWalletsListView.ItemsSource = userWallets;
+
+                // Add transaction tab data
+                WalletComboBox.ItemsSource = userWallets;
                 CategoryComboBox.ItemsSource = db.Categories.ToList();
             }
+        }
+
+        private void NavButton_Click(object sender, RoutedEventArgs e)
+        {
+            // Reset all navigation buttons to inactive style
+            HomeButton.Style = (Style)FindResource("NavButtonStyle");
+            HistoryButton.Style = (Style)FindResource("NavButtonStyle");
+            AddButton.Style = (Style)FindResource("NavButtonStyle");
+            BalanceButton.Style = (Style)FindResource("NavButtonStyle");
+
+            // Set clicked button to active style and switch tabs
+            Button clickedButton = sender as Button;
+            clickedButton.Style = (Style)FindResource("ActiveNavButtonStyle");
+
+            switch (clickedButton.Name)
+            {
+                case "HomeButton":
+                    MainTabControl.SelectedItem = OverviewTab;
+                    break;
+                case "HistoryButton":
+                    MainTabControl.SelectedItem = HistoryTab;
+                    break;
+                case "AddButton":
+                    MainTabControl.SelectedItem = AddTransactionTab;
+                    break;
+                case "BalanceButton":
+                    MainTabControl.SelectedItem = BalanceTab;
+                    break;
+            }
+        }
+
+        private void SettingsButton_Click(object sender, RoutedEventArgs e)
+        {
+            SettingsOverlay.Visibility = Visibility.Visible;
+        }
+
+        private void CloseSettings_Click(object sender, RoutedEventArgs e)
+        {
+            SettingsOverlay.Visibility = Visibility.Collapsed;
+        }
+
+        private void HelpCenter_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("Welcome to the Help Center!\n\nHere you can find answers to frequently asked questions, user guides, and troubleshooting tips.\n\nFor immediate assistance, please contact our support team.", 
+                "Help Center", MessageBoxButton.OK, MessageBoxImage.Information);
+            SettingsOverlay.Visibility = Visibility.Collapsed;
+        }
+
+        private void ReportProblem_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("Report a Problem\n\nIf you're experiencing any issues with the app, please describe the problem below and our team will investigate.\n\nYou can also contact support at: support@thriftify.com", 
+                "Report a Problem", MessageBoxButton.OK, MessageBoxImage.Information);
+            SettingsOverlay.Visibility = Visibility.Collapsed;
+        }
+
+        private void TermsOfUse_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("Terms of Use\n\nBy using Thriftify, you agree to our Terms of Service and Privacy Policy.\n\nKey points:\n• Your data is secure and private\n• Use the app responsibly\n• Report any issues promptly\n\nFull terms available at: www.thriftify.com/terms", 
+                "Terms of Use", MessageBoxButton.OK, MessageBoxImage.Information);
+            SettingsOverlay.Visibility = Visibility.Collapsed;
+        }
+
+        private void RateApp_Click(object sender, RoutedEventArgs e)
+        {
+            var result = MessageBox.Show("Rate Thriftify\n\nAre you enjoying using Thriftify? We'd love to hear your feedback!\n\nWould you like to rate the app in the store?", 
+                "Rate the App", MessageBoxButton.YesNo, MessageBoxImage.Question);
+            
+            if (result == MessageBoxResult.Yes)
+            {
+                MessageBox.Show("Thank you for your support! You would be redirected to the app store to leave a review.", 
+                    "Thank You!", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            SettingsOverlay.Visibility = Visibility.Collapsed;
         }
 
         private async void ConvertCurrency_Click(object sender, RoutedEventArgs e)
