@@ -57,27 +57,76 @@
             <TabItem Header="User Management">
                 <ScrollViewer>
                     <StackPanel Margin="10">
-                        <TextBlock Text="User Accounts" FontWeight="Bold" Margin="0,0,0,10"/>
+                        <Grid Margin="0,0,0,10">
+                            <TextBlock Text="User Accounts" FontWeight="Bold" HorizontalAlignment="Left"/>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                <TextBlock Text="Show:" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                                <ComboBox x:Name="UserFilterComboBox" Width="120" SelectedIndex="0" 
+                                          SelectionChanged="UserFilter_Changed">
+                                    <ComboBoxItem Content="Active Users"/>
+                                    <ComboBoxItem Content="All Users"/>
+                                    <ComboBoxItem Content="Inactive Users"/>
+                                </ComboBox>
+                            </StackPanel>
+                        </Grid>
 
-                        <ListView x:Name="UsersListView" Height="250" BorderThickness="0">
-                            <ListView.ItemTemplate>
+                        <ItemsControl x:Name="UsersItemsControl">
+                            <ItemsControl.ItemTemplate>
                                 <DataTemplate>
-                                    <StackPanel Margin="5">
-                                        <TextBlock Text="{Binding username}" FontWeight="Bold"/>
-                                        <TextBlock Text="{Binding user_type}"/>
-                                        <TextBlock Text="{Binding email}"/>
-                                        <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
-                                            <Button Content="Disable" Click="DisableUser_Click" Tag="{Binding user_id}" 
-                                                    Margin="0,0,5,0" Background="#D84F4E" Foreground="White" 
-                                                    Style="{StaticResource RoundButtonStyle}"/>
-                                            <Button Content="Enable" Click="EnableUser_Click" Tag="{Binding user_id}" 
-                                                    Margin="0,0,5,0" Background="#8FD398" Foreground="White" 
-                                                    Style="{StaticResource RoundButtonStyle}"/>
-                                        </StackPanel>
-                                    </StackPanel>
+                                    <Border Background="White" CornerRadius="10" Margin="0,5" Padding="15"
+                                            BorderBrush="#E0E0E0" BorderThickness="1">
+                                        <Grid>
+                                            <StackPanel>
+                                                <Grid>
+                                                    <StackPanel>
+                                                        <TextBlock Text="{Binding display_name}" FontWeight="Bold" FontSize="16"/>
+                                                        <TextBlock Text="{Binding username}" FontSize="12" Foreground="#666" Margin="0,2,0,0"/>
+                                                        <TextBlock Text="{Binding email}" FontSize="12" Foreground="#666"/>
+                                                        <StackPanel Orientation="Horizontal" Margin="0,5,0,0">
+                                                            <Border Background="{Binding StatusColor}" CornerRadius="10" Padding="5,2">
+                                                                <TextBlock Text="{Binding StatusText}" FontSize="10" 
+                                                                           Foreground="White" FontWeight="Bold"/>
+                                                            </Border>
+                                                            <Border Background="#45A176" CornerRadius="10" Padding="5,2" Margin="5,0,0,0">
+                                                                <TextBlock Text="{Binding user_type}" FontSize="10" 
+                                                                           Foreground="White" FontWeight="Bold"/>
+                                                            </Border>
+                                                        </StackPanel>
+                                                    </StackPanel>
+                                                    <TextBlock Text="{Binding created_at, StringFormat=MMM dd, yyyy}" 
+                                                               FontSize="10" Foreground="#999" HorizontalAlignment="Right" VerticalAlignment="Top"/>
+                                                </Grid>
+                                            </StackPanel>
+                                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom">
+                                                <Button Content="👁️" Background="Transparent" BorderThickness="0"
+                                                        Foreground="#45A176" FontSize="14" Width="30" Height="30"
+                                                        Click="ViewUser_Click" Tag="{Binding user_id}" ToolTip="View Details"/>
+                                                <Button Background="Transparent" BorderThickness="0" FontSize="12" Width="60" Height="25"
+                                                        Click="ToggleUser_Click" Tag="{Binding user_id}" ToolTip="Enable/Disable User">
+                                                    <Button.Style>
+                                                        <Style TargetType="Button">
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding is_active}" Value="True">
+                                                                    <Setter Property="Content" Value="Disable"/>
+                                                                    <Setter Property="Foreground" Value="#D84F4E"/>
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding is_active}" Value="False">
+                                                                    <Setter Property="Content" Value="Enable"/>
+                                                                    <Setter Property="Foreground" Value="#8FD398"/>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Button.Style>
+                                                </Button>
+                                                <Button Content="🗑️" Background="Transparent" BorderThickness="0"
+                                                        Foreground="#FF6B6B" FontSize="12" Width="25" Height="25"
+                                                        Click="DeleteUser_Click" Tag="{Binding user_id}" ToolTip="Delete User"/>
+                                            </StackPanel>
+                                        </Grid>
+                                    </Border>
                                 </DataTemplate>
-                            </ListView.ItemTemplate>
-                        </ListView>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
                     </StackPanel>
                 </ScrollViewer>
             </TabItem>

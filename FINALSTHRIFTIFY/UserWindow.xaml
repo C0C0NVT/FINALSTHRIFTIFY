@@ -6,59 +6,109 @@
         Height="746" Width="344"
         WindowStartupLocation="CenterScreen"
         ResizeMode="NoResize"
-        Background="#5F9F7B">
+        x:Name="MainUserWindow"
+        Background="{Binding Background, ElementName=MainUserWindow, FallbackValue=#5F9F7B}">
     <Window.Resources>
-        <Style x:Key="RoundButtonStyle" TargetType="Button">
-            <Setter Property="Background" Value="#8FD398"/>
+        <!-- Color Resources for Light Theme -->
+        <SolidColorBrush x:Key="BackgroundColorLight" Color="#5F9F7B"/>
+        <SolidColorBrush x:Key="BackgroundColorDark" Color="#2C2C2C"/>
+        <SolidColorBrush x:Key="TextColorLight" Color="White"/>
+        <SolidColorBrush x:Key="TextColorDark" Color="#8FD398"/>
+        <SolidColorBrush x:Key="CardBackgroundLight" Color="#F5F5F5"/>
+        <SolidColorBrush x:Key="CardBackgroundDark" Color="#3C3C3C"/>
+        <SolidColorBrush x:Key="ActiveTabColor" Color="#45A176"/>
+        <SolidColorBrush x:Key="InactiveTabColor" Color="#888888"/>
+        <SolidColorBrush x:Key="ButtonGradientStart" Color="#45A176"/>
+        <SolidColorBrush x:Key="ButtonGradientEnd" Color="#193B2B"/>
+
+        <!-- Dynamic Theme Resources -->
+        <SolidColorBrush x:Key="DynamicBackground" Color="{Binding Source={x:Static local:ThemeManager.Instance}, Path=BackgroundColor}"/>
+        <SolidColorBrush x:Key="DynamicText" Color="{Binding Source={x:Static local:ThemeManager.Instance}, Path=TextColor}"/>
+        <SolidColorBrush x:Key="DynamicCard" Color="{Binding Source={x:Static local:ThemeManager.Instance}, Path=CardBackground}"/>
+
+        <!-- Button Styles -->
+        <Style x:Key="ModernButtonStyle" TargetType="Button">
+            <Setter Property="Background">
+                <Setter.Value>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                        <GradientStop Color="#45A176" Offset="0"/>
+                        <GradientStop Color="#193B2B" Offset="1"/>
+                    </LinearGradientBrush>
+                </Setter.Value>
+            </Setter>
             <Setter Property="Foreground" Value="White"/>
             <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Padding" Value="8"/>
             <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="FontSize" Value="13"/>
             <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Border Background="{TemplateBinding Background}" CornerRadius="25">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="20" Padding="{TemplateBinding Padding}">
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="RenderTransform">
+                                    <Setter.Value>
+                                        <ScaleTransform ScaleX="1.05" ScaleY="1.05"/>
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter Property="Effect">
+                                    <Setter.Value>
+                                        <DropShadowEffect Color="Black" BlurRadius="10" Opacity="0.3"/>
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
         </Style>
 
-        <Style x:Key="NavButtonStyle" TargetType="Button">
+        <Style x:Key="WalletCardStyle" TargetType="Border">
+            <Setter Property="CornerRadius" Value="15"/>
+            <Setter Property="Margin" Value="10,5"/>
+            <Setter Property="Padding" Value="15"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect Color="Black" BlurRadius="5" Opacity="0.2"/>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Trigger.EnterActions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)" 
+                                               To="1.02" Duration="0:0:0.2"/>
+                                <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)" 
+                                               To="1.02" Duration="0:0:0.2"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </Trigger.EnterActions>
+                    <Trigger.ExitActions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)" 
+                                               To="1.0" Duration="0:0:0.2"/>
+                                <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)" 
+                                               To="1.0" Duration="0:0:0.2"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </Trigger.ExitActions>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="NavTabStyle" TargetType="Button">
             <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="Foreground" Value="White"/>
-            <Setter Property="BorderBrush" Value="Transparent"/>
             <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Padding" Value="5"/>
             <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="FontSize" Value="11"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
                         <Border Background="{TemplateBinding Background}">
-                            <StackPanel>
-                                <TextBlock Text="{TemplateBinding Tag}" FontSize="20" 
-                                           HorizontalAlignment="Center" Margin="0,0,0,3"/>
-                                <ContentPresenter HorizontalAlignment="Center"/>
-                            </StackPanel>
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <Style x:Key="WalletButtonStyle" TargetType="Button">
-            <Setter Property="Background" Value="#45A176"/>
-            <Setter Property="Foreground" Value="White"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Padding" Value="5"/>
-            <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border Background="{TemplateBinding Background}" CornerRadius="10">
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
                     </ControlTemplate>
@@ -66,144 +116,481 @@
             </Setter>
         </Style>
 
-        <Style x:Key="ExpenseButtonStyle" TargetType="Button" BasedOn="{StaticResource WalletButtonStyle}">
-            <Setter Property="Background" Value="#D84F4E"/>
-        </Style>
+        <!-- Dropdown Animation -->
+        <Storyboard x:Key="DropdownOpenAnimation">
+            <DoubleAnimation Storyboard.TargetProperty="Height" From="0" To="200" Duration="0:0:0.3">
+                <DoubleAnimation.EasingFunction>
+                    <CubicEase EasingMode="EaseOut"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+            <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.3"/>
+        </Storyboard>
+
+        <Storyboard x:Key="DropdownCloseAnimation">
+            <DoubleAnimation Storyboard.TargetProperty="Height" From="200" To="0" Duration="0:0:0.3">
+                <DoubleAnimation.EasingFunction>
+                    <CubicEase EasingMode="EaseIn"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+            <DoubleAnimation Storyboard.TargetProperty="Opacity" From="1" To="0" Duration="0:0:0.3"/>
+        </Storyboard>
+
+        <!-- Page Transition Animation -->
+        <Storyboard x:Key="PageSlideIn">
+            <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.X)" 
+                           From="344" To="0" Duration="0:0:0.3">
+                <DoubleAnimation.EasingFunction>
+                    <CubicEase EasingMode="EaseOut"/>
+                </DoubleAnimation.EasingFunction>
+            </DoubleAnimation>
+        </Storyboard>
     </Window.Resources>
 
-    <Grid>
+    <Grid Background="{StaticResource DynamicBackground}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="60"/>
         </Grid.RowDefinitions>
 
+        <!-- Header -->
         <Border Grid.Row="0" Background="#69886D" Padding="15">
-            <StackPanel>
-                <TextBlock x:Name="WelcomeText" 
-                           Text="Welcome, User" 
-                           Foreground="White" 
-                           FontSize="18" 
-                           FontWeight="Bold"
-                           HorizontalAlignment="Center"/>
-            </StackPanel>
+            <Grid>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                    <TextBlock x:Name="WelcomeText" 
+                               Text="Welcome, User" 
+                               Foreground="White" 
+                               FontSize="18" 
+                               FontWeight="Bold"/>
+                    <Button x:Name="NotificationButton" Content="🔔" Background="Transparent" BorderThickness="0"
+                            Foreground="White" FontSize="16" Margin="10,0,0,0" Cursor="Hand"
+                            Click="NotificationButton_Click"/>
+                </StackPanel>
+                <Button x:Name="LogoutButton" Content="⚪" Background="Transparent" BorderThickness="0"
+                        Foreground="White" FontSize="16" HorizontalAlignment="Right" Cursor="Hand"
+                        Click="Logout_Click" ToolTip="Logout"/>
+            </Grid>
         </Border>
 
-        <TabControl Grid.Row="1" Background="#F5F5F5" BorderThickness="0">
-            <TabItem Header="Overview">
-                <ScrollViewer>
-                    <StackPanel Margin="10">
-                        <Border Background="#E8F5E9" CornerRadius="10" Padding="10" Margin="0,0,0,15">
+        <!-- Main Content Area -->
+        <Grid Grid.Row="1" Background="{StaticResource DynamicCard}">
+            <!-- Home/Wallets Page -->
+            <Grid x:Name="HomePage" Visibility="Visible">
+                <Grid.RenderTransform>
+                    <TranslateTransform/>
+                </Grid.RenderTransform>
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel Margin="20,20,20,0">
+                        <TextBlock Text="Thriftify" FontSize="24" FontWeight="Bold" Foreground="{StaticResource DynamicText}" 
+                                   HorizontalAlignment="Left" Margin="0,0,0,8"/>
+                        <TextBlock Text="Wallets" FontSize="20" Foreground="{StaticResource DynamicText}" 
+                                   HorizontalAlignment="Left" Margin="0,0,0,20"/>
+
+                        <!-- Wallet Summary Card -->
+                        <Border Style="{StaticResource WalletCardStyle}" Background="#E8F5E9" Margin="0,0,0,20">
+                            <Border.RenderTransform>
+                                <ScaleTransform/>
+                            </Border.RenderTransform>
                             <StackPanel>
-                                <TextBlock Text="Currency Converter" FontWeight="Bold" Margin="0,0,0,10"/>
-                                <TextBox x:Name="AmountToConvert" Text="0" Margin="0,0,0,10"/>
-                                <ComboBox x:Name="CurrencySelector" Margin="0,0,0,10">
-                                    <ComboBoxItem Content="USD - US Dollar" Tag="56.50"/>
-                                    <ComboBoxItem Content="JPY - Japanese Yen" Tag="0.38"/>
-                                    <ComboBoxItem Content="KRW - South Korean Won" Tag="0.042"/>
-                                    <ComboBoxItem Content="EUR - Euro" Tag="60.25"/>
-                                </ComboBox>
-                                <Button Content="Convert" Click="ConvertCurrency_Click"
-                                        Style="{StaticResource RoundButtonStyle}" Margin="0,0,0,10"/>
-                                <TextBlock x:Name="ConversionResult" FontWeight="Bold" HorizontalAlignment="Center"/>
+                                <TextBlock Text="Total Balance" FontSize="14" Foreground="#666" FontWeight="Bold"/>
+                                <TextBlock x:Name="TotalBalanceText" Text="₱0.00" FontSize="28" FontWeight="Bold" 
+                                           Foreground="#45A176" Margin="0,5,0,0"/>
+                                <TextBlock x:Name="WalletCountText" Text="0 Wallets" FontSize="12" Foreground="#888"/>
                             </StackPanel>
                         </Border>
 
-                        <TextBlock Text="Your Wallets" FontWeight="Bold" Margin="0,0,0,10"/>
+                        <!-- Add Wallet Button -->
+                        <Button Background="Transparent" BorderThickness="2" BorderBrush="#45A176" 
+                                Cursor="Hand" Margin="0,0,0,20" Height="100" Click="AddWallet_Click"
+                                Style="{StaticResource NavTabStyle}">
+                            <StackPanel>
+                                <Ellipse Width="60" Height="60" Stroke="#45A176" StrokeThickness="2" 
+                                         StrokeDashArray="5,5" Margin="0,0,0,10"/>
+                                <TextBlock Text="+" FontSize="30" Foreground="#45A176" 
+                                           HorizontalAlignment="Center" Margin="0,-50,0,20"/>
+                                <TextBlock Text="Add Wallet" FontSize="13" Foreground="#45A176" 
+                                           HorizontalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
 
-                        <ListView x:Name="WalletsListView" Height="150" BorderThickness="0">
-                            <ListView.ItemTemplate>
+                        <!-- Wallets List -->
+                        <ItemsControl x:Name="WalletsItemsControl">
+                            <ItemsControl.ItemTemplate>
                                 <DataTemplate>
-                                    <Border Background="{Binding BgColor}" CornerRadius="10" Padding="10" 
-                                            BorderThickness="5,0,0,0">
-                                        <StackPanel>
-                                            <TextBlock Text="{Binding wallet_name}" FontWeight="Bold" Foreground="Green"/>
-                                            <TextBlock Text="Balance" FontSize="11" Foreground="Green" Opacity="0.8"/>
-                                            <TextBlock Text="{Binding current_balance, StringFormat={}{0:C}}" 
-                                                       FontSize="18" FontWeight="Bold" Foreground="Green"/>
-                                            <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
-                                                <Button Content="Add Funds" Tag="{Binding wallet_id}" 
-                                                        Style="{StaticResource WalletButtonStyle}" 
-                                                        Margin="0,0,5,0"/>
-                                                <Button Content="Spend" Tag="{Binding wallet_id}" 
-                                                        Style="{StaticResource ExpenseButtonStyle}"/>
+                                    <Border Style="{StaticResource WalletCardStyle}" Cursor="Hand"
+                                            MouseLeftButtonUp="WalletCard_Click" Tag="{Binding wallet_id}">
+                                        <Border.Background>
+                                            <SolidColorBrush Color="{Binding background_color}"/>
+                                        </Border.Background>
+                                        <Border.RenderTransform>
+                                            <ScaleTransform/>
+                                        </Border.RenderTransform>
+                                        <Grid>
+                                            <StackPanel>
+                                                <TextBlock Text="{Binding wallet_name}" FontWeight="Bold" FontSize="16"
+                                                           Foreground="{Binding text_color}"/>
+                                                <TextBlock Text="{Binding wallet_type}" FontSize="12" Opacity="0.8"
+                                                           Foreground="{Binding text_color}" Margin="0,2,0,8"/>
+                                                <TextBlock Text="Balance" FontSize="11" Opacity="0.7"
+                                                           Foreground="{Binding text_color}"/>
+                                                <TextBlock Text="{Binding current_balance, StringFormat=₱{0:N2}}" 
+                                                           FontSize="20" FontWeight="Bold"
+                                                           Foreground="{Binding text_color}"/>
                                             </StackPanel>
-                                        </StackPanel>
+                                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom">
+                                                <Button Content="💰" Background="Transparent" BorderThickness="0"
+                                                        Foreground="{Binding text_color}" FontSize="14" Width="30" Height="30"
+                                                        Click="AddFunds_Click" Tag="{Binding wallet_id}" ToolTip="Add Funds"/>
+                                                <Button Content="💳" Background="Transparent" BorderThickness="0"
+                                                        Foreground="{Binding text_color}" FontSize="14" Width="30" Height="30"
+                                                        Click="Spend_Click" Tag="{Binding wallet_id}" ToolTip="Spend"/>
+                                                <Button Content="⚙️" Background="Transparent" BorderThickness="0"
+                                                        Foreground="{Binding text_color}" FontSize="12" Width="30" Height="30"
+                                                        Click="EditWallet_Click" Tag="{Binding wallet_id}" ToolTip="Edit Wallet"/>
+                                            </StackPanel>
+                                        </Grid>
                                     </Border>
                                 </DataTemplate>
-                            </ListView.ItemTemplate>
-                        </ListView>
-
-                        <Button Content="Add Wallet" Click="AddWallet_Click" 
-                                Style="{StaticResource RoundButtonStyle}" Margin="0,10,0,10"/>
-
-                        <TextBlock Text="Recent Transactions" FontWeight="Bold" Margin="0,20,0,10"/>
-
-                        <ListView x:Name="TransactionsListView" Height="200" BorderThickness="0">
-                            <ListView.ItemTemplate>
-                                <DataTemplate>
-                                    <StackPanel Margin="5">
-                                        <TextBlock>
-                                            <Run Text="{Binding transaction_type}" FontWeight="Bold"/>
-                                            <Run Text=" - "/>
-                                            <Run Text="{Binding description}" FontStyle="Italic"/>
-                                        </TextBlock>
-                                        <TextBlock>
-                                            <Run Text="{Binding transaction_date, StringFormat={}{0:MMM dd}}"/>
-                                            <Run Text=" - "/>
-                                            <Run Text="{Binding amount, StringFormat={}{0:C}}"/>
-                                        </TextBlock>
-                                    </StackPanel>
-                                </DataTemplate>
-                            </ListView.ItemTemplate>
-                        </ListView>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
                     </StackPanel>
                 </ScrollViewer>
-            </TabItem>
+            </Grid>
 
-            <TabItem Header="Add Transaction">
-                <ScrollViewer>
-                    <StackPanel Margin="10">
-                        <TextBlock Text="Add New Transaction" FontWeight="Bold" Margin="0,0,0,10"/>
+            <!-- History Page -->
+            <Grid x:Name="HistoryPage" Visibility="Collapsed">
+                <Grid.RenderTransform>
+                    <TranslateTransform/>
+                </Grid.RenderTransform>
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel Margin="20">
+                        <TextBlock Text="Transaction History" FontSize="20" FontWeight="Bold" 
+                                   Foreground="{StaticResource DynamicText}" Margin="0,0,0,10"/>
+                        <TextBlock x:Name="HistoryDateText" FontSize="14" Foreground="#888" Margin="0,0,0,20"/>
+                        
+                        <ItemsControl x:Name="TransactionsItemsControl">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Background="{StaticResource DynamicCard}" CornerRadius="10" Margin="0,5" Padding="15"
+                                            BorderBrush="#E0E0E0" BorderThickness="1">
+                                        <Grid>
+                                            <StackPanel>
+                                                <Grid>
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <TextBlock Text="{Binding transaction_date, StringFormat=MMM dd}" 
+                                                                   FontWeight="Bold" Foreground="{StaticResource DynamicText}"/>
+                                                        <TextBlock Text="{Binding Wallet.wallet_name}" 
+                                                                   FontSize="12" Foreground="#888" Margin="10,0"/>
+                                                    </StackPanel>
+                                                    <TextBlock Text="{Binding transaction_date, StringFormat=HH:mm}" 
+                                                               FontSize="12" Foreground="#888" HorizontalAlignment="Right"/>
+                                                </Grid>
+                                                <TextBlock Text="{Binding description}" FontSize="14" 
+                                                           Foreground="{StaticResource DynamicText}" Margin="0,5,0,0"/>
+                                            </StackPanel>
+                                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom">
+                                                <TextBlock FontSize="16" FontWeight="Bold" Margin="0,0,10,0">
+                                                    <TextBlock.Style>
+                                                        <Style TargetType="TextBlock">
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding transaction_type}" Value="Income">
+                                                                    <Setter Property="Text" Value="{Binding amount, StringFormat=+₱{0:N2}}"/>
+                                                                    <Setter Property="Foreground" Value="#8FD398"/>
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding transaction_type}" Value="Expense">
+                                                                    <Setter Property="Text" Value="{Binding amount, StringFormat=-₱{0:N2}}"/>
+                                                                    <Setter Property="Foreground" Value="#9F0909"/>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </TextBlock.Style>
+                                                </TextBlock>
+                                                <Button Content="🗑️" Background="Transparent" BorderThickness="0"
+                                                        Foreground="#FF6B6B" FontSize="12" Width="25" Height="25"
+                                                        Click="DeleteTransaction_Click" Tag="{Binding transaction_id}" 
+                                                        ToolTip="Delete Transaction"/>
+                                            </StackPanel>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </ScrollViewer>
+            </Grid>
 
-                        <ComboBox x:Name="WalletComboBox" DisplayMemberPath="wallet_name" Margin="0,0,0,10"/>
+            <!-- Add Transaction Page -->
+            <Grid x:Name="AddPage" Visibility="Collapsed">
+                <Grid.RenderTransform>
+                    <TranslateTransform/>
+                </Grid.RenderTransform>
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel Margin="20">
+                        <TextBlock Text="Add Transaction" FontSize="20" FontWeight="Bold" 
+                                   Foreground="{StaticResource DynamicText}" Margin="0,0,0,20"/>
 
-                        <ComboBox x:Name="TransactionTypeComboBox" Margin="0,0,0,10">
+                        <TextBlock Text="Select Wallet" FontWeight="Bold" Foreground="{StaticResource DynamicText}" Margin="0,0,0,5"/>
+                        <ComboBox x:Name="WalletComboBox" DisplayMemberPath="wallet_name" SelectedValuePath="wallet_id"
+                                  Margin="0,0,0,15" Height="40" FontSize="14"/>
+
+                        <TextBlock Text="Transaction Type" FontWeight="Bold" Foreground="{StaticResource DynamicText}" Margin="0,0,0,5"/>
+                        <ComboBox x:Name="TransactionTypeComboBox" Margin="0,0,0,15" Height="40" FontSize="14">
                             <ComboBoxItem Content="Income"/>
                             <ComboBoxItem Content="Expense"/>
                         </ComboBox>
 
-                        <ComboBox x:Name="CategoryComboBox" DisplayMemberPath="category_name" Margin="0,0,0,10"/>
+                        <TextBlock Text="Category" FontWeight="Bold" Foreground="{StaticResource DynamicText}" Margin="0,0,0,5"/>
+                        <ComboBox x:Name="CategoryComboBox" DisplayMemberPath="category_name" SelectedValuePath="category_id"
+                                  Margin="0,0,0,15" Height="40" FontSize="14"/>
 
-                        <TextBox x:Name="AmountTextBox" Margin="0,0,0,10"/>
+                        <TextBlock Text="Amount (₱)" FontWeight="Bold" Foreground="{StaticResource DynamicText}" Margin="0,0,0,5"/>
+                        <TextBox x:Name="AmountTextBox" Margin="0,0,0,15" Height="40" FontSize="14" 
+                                 VerticalContentAlignment="Center" Padding="10"/>
 
-                        <TextBox x:Name="DescriptionTextBox" Margin="0,0,0,10"/>
+                        <TextBlock Text="Description" FontWeight="Bold" Foreground="{StaticResource DynamicText}" Margin="0,0,0,5"/>
+                        <TextBox x:Name="DescriptionTextBox" Margin="0,0,0,20" Height="40" FontSize="14"
+                                 VerticalContentAlignment="Center" Padding="10"/>
 
-                        <Button Content="Add Transaction" Click="AddTransaction_Click"
-                                Style="{StaticResource RoundButtonStyle}"/>
+                        <Button Content="ADD TRANSACTION" Style="{StaticResource ModernButtonStyle}"
+                                Height="50" Margin="0,0,0,10" Click="AddTransaction_Click"/>
 
-                        <TextBlock x:Name="TransactionErrorText" Foreground="#9F0909" Margin="0,10,0,0" Visibility="Collapsed"/>
+                        <TextBlock x:Name="TransactionErrorText" Foreground="#9F0909" Margin="0,10,0,0" 
+                                   Visibility="Collapsed" TextWrapping="Wrap"/>
+                        <TextBlock x:Name="TransactionSuccessText" Foreground="#8FD398" Margin="0,10,0,0" 
+                                   Visibility="Collapsed" TextWrapping="Wrap"/>
                     </StackPanel>
                 </ScrollViewer>
-            </TabItem>
-        </TabControl>
-
-        <Border Grid.Row="2" Background="#69886D">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-
-                <Button Grid.Column="0" Style="{StaticResource NavButtonStyle}" Tag="🏠" Content="Home"/>
-                <Button Grid.Column="1" Style="{StaticResource NavButtonStyle}" Tag="🕒" Content="History"/>
-                <Button Grid.Column="2" Style="{StaticResource NavButtonStyle}" Tag="➕" Content="Add"/>
-                <Button Grid.Column="3" Style="{StaticResource NavButtonStyle}" Tag="₱" Content="Balance"/>
-                <Button Grid.Column="4" Style="{StaticResource NavButtonStyle}" Tag="⚙️" Content="Settings"/>
             </Grid>
+
+            <!-- Balance/Adjust Page -->
+            <Grid x:Name="BalancePage" Visibility="Collapsed">
+                <Grid.RenderTransform>
+                    <TranslateTransform/>
+                </Grid.RenderTransform>
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel Margin="20">
+                        <TextBlock Text="Adjust Balance" FontSize="20" FontWeight="Bold" 
+                                   Foreground="{StaticResource DynamicText}" Margin="0,0,0,20"/>
+
+                        <TextBlock Text="Select Wallet" FontWeight="Bold" Foreground="{StaticResource DynamicText}" Margin="0,0,0,5"/>
+                        <ComboBox x:Name="AdjustWalletComboBox" DisplayMemberPath="wallet_name" SelectedValuePath="wallet_id"
+                                  Margin="0,0,0,15" Height="40" FontSize="14"/>
+
+                        <TextBlock Text="Amount (₱)" FontWeight="Bold" Foreground="{StaticResource DynamicText}" Margin="0,0,0,5"/>
+                        <TextBox x:Name="AdjustAmountTextBox" Margin="0,0,0,15" Height="40" FontSize="14" 
+                                 VerticalContentAlignment="Center" Padding="10"/>
+
+                        <TextBlock Text="Adjustment Type" FontWeight="Bold" Foreground="{StaticResource DynamicText}" Margin="0,0,0,5"/>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,15">
+                            <RadioButton x:Name="IncomeRadio" Content="Income" GroupName="AdjustmentType" 
+                                         Foreground="#8FD398" FontWeight="Bold" Margin="0,0,20,0" IsChecked="True"/>
+                            <RadioButton x:Name="ExpenseRadio" Content="Expense" GroupName="AdjustmentType" 
+                                         Foreground="#D84F4E" FontWeight="Bold"/>
+                        </StackPanel>
+
+                        <TextBlock Text="Description" FontWeight="Bold" Foreground="{StaticResource DynamicText}" Margin="0,0,0,5"/>
+                        <TextBox x:Name="AdjustDescriptionTextBox" Margin="0,0,0,20" Height="40" FontSize="14"
+                                 VerticalContentAlignment="Center" Padding="10"/>
+
+                        <Button Content="SAVE ADJUSTMENT" Style="{StaticResource ModernButtonStyle}"
+                                Height="50" Margin="0,0,0,10" Click="SaveAdjustment_Click"/>
+
+                        <TextBlock x:Name="AdjustErrorText" Foreground="#9F0909" Margin="0,10,0,0" 
+                                   Visibility="Collapsed" TextWrapping="Wrap"/>
+                        <TextBlock x:Name="AdjustSuccessText" Foreground="#8FD398" Margin="0,10,0,0" 
+                                   Visibility="Collapsed" TextWrapping="Wrap"/>
+                    </StackPanel>
+                </ScrollViewer>
+            </Grid>
+
+            <!-- Settings Page -->
+            <Grid x:Name="SettingsPage" Visibility="Collapsed">
+                <Grid.RenderTransform>
+                    <TranslateTransform/>
+                </Grid.RenderTransform>
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel Margin="20">
+                        <TextBlock Text="Settings" FontSize="20" FontWeight="Bold" 
+                                   Foreground="{StaticResource DynamicText}" Margin="0,0,0,20"/>
+
+                        <!-- Profile Section -->
+                        <Border Background="{StaticResource DynamicCard}" CornerRadius="10" Padding="15" Margin="0,0,0,15">
+                            <StackPanel>
+                                <TextBlock Text="Profile" FontWeight="Bold" FontSize="16" 
+                                           Foreground="{StaticResource DynamicText}" Margin="0,0,0,10"/>
+                                <Grid>
+                                    <Ellipse Width="60" Height="60" Fill="#E0E0E0" HorizontalAlignment="Left"/>
+                                    <TextBlock Text="👤" FontSize="30" HorizontalAlignment="Left" 
+                                               VerticalAlignment="Center" Margin="15,0,0,0"/>
+                                    <Button Content="+" Background="#45A176" Foreground="White" 
+                                            Width="20" Height="20" FontSize="12" FontWeight="Bold"
+                                            HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="40,40,0,0"
+                                            Click="ChangeProfilePicture_Click"/>
+                                    <StackPanel Margin="80,0,0,0">
+                                        <TextBlock x:Name="ProfileNameText" Text="[Profile Name]" FontWeight="Bold"
+                                                   Foreground="{StaticResource DynamicText}" FontSize="16" Cursor="Hand"
+                                                   MouseLeftButtonUp="EditProfileName_Click"/>
+                                        <TextBlock x:Name="ProfileEmailText" Text="user@example.com" FontSize="12"
+                                                   Foreground="#888"/>
+                                    </StackPanel>
+                                </Grid>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Key Settings -->
+                        <Border Background="{StaticResource DynamicCard}" CornerRadius="10" Padding="15" Margin="0,0,0,15">
+                            <StackPanel>
+                                <TextBlock Text="Key Settings" FontWeight="Bold" FontSize="16" 
+                                           Foreground="{StaticResource DynamicText}" Margin="0,0,0,10"/>
+                                
+                                <Button Style="{StaticResource NavTabStyle}" HorizontalContentAlignment="Left"
+                                        Padding="10" Margin="0,5" Click="SettingsDropdown_Click" Tag="Theme">
+                                    <Grid>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="🌙" FontSize="16" Margin="0,0,10,0"/>
+                                            <TextBlock Text="Change Theme" FontSize="14" Foreground="{StaticResource DynamicText}"/>
+                                        </StackPanel>
+                                        <TextBlock Text="▼" FontSize="12" HorizontalAlignment="Right" 
+                                                   Foreground="{StaticResource DynamicText}"/>
+                                    </Grid>
+                                </Button>
+                                <StackPanel x:Name="ThemeDropdown" Height="0" Opacity="0" ClipToBounds="True">
+                                    <StackPanel Margin="30,10">
+                                        <RadioButton x:Name="LightThemeRadio" Content="Light Theme" GroupName="Theme"
+                                                     Foreground="{StaticResource DynamicText}" Margin="0,5"
+                                                     Checked="ThemeChanged" IsChecked="True"/>
+                                        <RadioButton x:Name="DarkThemeRadio" Content="Dark Theme" GroupName="Theme"
+                                                     Foreground="{StaticResource DynamicText}" Margin="0,5"
+                                                     Checked="ThemeChanged"/>
+                                    </StackPanel>
+                                </StackPanel>
+
+                                <Button Style="{StaticResource NavTabStyle}" HorizontalContentAlignment="Left"
+                                        Padding="10" Margin="0,5" Click="SettingsDropdown_Click" Tag="Currency">
+                                    <Grid>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="₱" FontSize="16" Margin="0,0,10,0"/>
+                                            <TextBlock Text="Currency Converter" FontSize="14" Foreground="{StaticResource DynamicText}"/>
+                                        </StackPanel>
+                                        <TextBlock Text="▼" FontSize="12" HorizontalAlignment="Right" 
+                                                   Foreground="{StaticResource DynamicText}"/>
+                                    </Grid>
+                                </Button>
+                                <StackPanel x:Name="CurrencyDropdown" Height="0" Opacity="0" ClipToBounds="True">
+                                    <StackPanel Margin="30,10">
+                                        <TextBox x:Name="AmountToConvert" Text="0" Margin="0,5" Height="35" 
+                                                 VerticalContentAlignment="Center" Padding="10"/>
+                                        <ComboBox x:Name="CurrencySelector" Margin="0,5" Height="35">
+                                            <ComboBoxItem Content="USD - US Dollar" Tag="USD"/>
+                                            <ComboBoxItem Content="JPY - Japanese Yen" Tag="JPY"/>
+                                            <ComboBoxItem Content="KRW - South Korean Won" Tag="KRW"/>
+                                            <ComboBoxItem Content="EUR - Euro" Tag="EUR"/>
+                                        </ComboBox>
+                                        <Button Content="Convert" Click="ConvertCurrency_Click"
+                                                Style="{StaticResource ModernButtonStyle}" Height="35" Margin="0,5"/>
+                                        <TextBlock x:Name="ConversionResult" FontWeight="Bold" HorizontalAlignment="Center"
+                                                   Foreground="{StaticResource DynamicText}" Margin="0,5"/>
+                                    </StackPanel>
+                                </StackPanel>
+
+                                <Button Style="{StaticResource NavTabStyle}" HorizontalContentAlignment="Left"
+                                        Padding="10" Margin="0,5" Click="NotificationSettings_Click">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="🔔" FontSize="16" Margin="0,0,10,0"/>
+                                        <TextBlock Text="Notifications" FontSize="14" Foreground="{StaticResource DynamicText}"/>
+                                    </StackPanel>
+                                </Button>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Basic Settings -->
+                        <Border Background="{StaticResource DynamicCard}" CornerRadius="10" Padding="15" Margin="0,0,0,15">
+                            <StackPanel>
+                                <TextBlock Text="Basic Settings" FontWeight="Bold" FontSize="16" 
+                                           Foreground="{StaticResource DynamicText}" Margin="0,0,0,10"/>
+                                
+                                <Button Style="{StaticResource NavTabStyle}" HorizontalContentAlignment="Left"
+                                        Padding="10" Margin="0,5" Click="WhatsNew_Click">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="✨" FontSize="16" Margin="0,0,10,0"/>
+                                        <TextBlock Text="What's new?" FontSize="14" Foreground="{StaticResource DynamicText}"/>
+                                    </StackPanel>
+                                </Button>
+
+                                <Button Style="{StaticResource NavTabStyle}" HorizontalContentAlignment="Left"
+                                        Padding="10" Margin="0,5" Click="ReportProblem_Click">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="🐛" FontSize="16" Margin="0,0,10,0"/>
+                                        <TextBlock Text="Report a problem" FontSize="14" Foreground="{StaticResource DynamicText}"/>
+                                    </StackPanel>
+                                </Button>
+
+                                <Button Style="{StaticResource NavTabStyle}" HorizontalContentAlignment="Left"
+                                        Padding="10" Margin="0,5" Click="TermsOfUse_Click">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="📋" FontSize="16" Margin="0,0,10,0"/>
+                                        <TextBlock Text="Terms of Use" FontSize="14" Foreground="{StaticResource DynamicText}"/>
+                                    </StackPanel>
+                                </Button>
+
+                                <Button Style="{StaticResource NavTabStyle}" HorizontalContentAlignment="Left"
+                                        Padding="10" Margin="0,5" Click="RateApp_Click">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="⭐" FontSize="16" Margin="0,0,10,0"/>
+                                        <TextBlock Text="Rate the app" FontSize="14" Foreground="{StaticResource DynamicText}"/>
+                                    </StackPanel>
+                                </Button>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </ScrollViewer>
+            </Grid>
+        </Grid>
+
+        <!-- Navigation Tabs -->
+        <Border Grid.Row="2" Background="White" BorderBrush="#EEEEEE" BorderThickness="0,1,0,0">
+            <UniformGrid Rows="1" Columns="5">
+                <Button x:Name="HomeTab" Style="{StaticResource NavTabStyle}" Click="Tab_Click" Tag="0">
+                    <StackPanel>
+                        <TextBlock x:Name="HomeIcon" Text="🏠" FontSize="20" HorizontalAlignment="Center" 
+                                   Foreground="{StaticResource ActiveTabColor}" Margin="0,0,0,4"/>
+                        <TextBlock x:Name="HomeLabel" Text="Home" FontSize="11" HorizontalAlignment="Center" 
+                                   Foreground="{StaticResource ActiveTabColor}"/>
+                    </StackPanel>
+                </Button>
+                <Button x:Name="HistoryTab" Style="{StaticResource NavTabStyle}" Click="Tab_Click" Tag="1">
+                    <StackPanel>
+                        <TextBlock x:Name="HistoryIcon" Text="🕒" FontSize="20" HorizontalAlignment="Center" 
+                                   Foreground="{StaticResource InactiveTabColor}" Margin="0,0,0,4"/>
+                        <TextBlock x:Name="HistoryLabel" Text="History" FontSize="11" HorizontalAlignment="Center" 
+                                   Foreground="{StaticResource InactiveTabColor}"/>
+                    </StackPanel>
+                </Button>
+                <Button x:Name="AddTab" Style="{StaticResource NavTabStyle}" Click="Tab_Click" Tag="2">
+                    <StackPanel>
+                        <TextBlock x:Name="AddIcon" Text="➕" FontSize="20" HorizontalAlignment="Center" 
+                                   Foreground="{StaticResource InactiveTabColor}" Margin="0,0,0,4"/>
+                        <TextBlock x:Name="AddLabel" Text="Add" FontSize="11" HorizontalAlignment="Center" 
+                                   Foreground="{StaticResource InactiveTabColor}"/>
+                    </StackPanel>
+                </Button>
+                <Button x:Name="BalanceTab" Style="{StaticResource NavTabStyle}" Click="Tab_Click" Tag="3">
+                    <StackPanel>
+                        <TextBlock x:Name="BalanceIcon" Text="💰" FontSize="20" HorizontalAlignment="Center" 
+                                   Foreground="{StaticResource InactiveTabColor}" Margin="0,0,0,4"/>
+                        <TextBlock x:Name="BalanceLabel" Text="Balance" FontSize="11" HorizontalAlignment="Center" 
+                                   Foreground="{StaticResource InactiveTabColor}"/>
+                    </StackPanel>
+                </Button>
+                <Button x:Name="SettingsTab" Style="{StaticResource NavTabStyle}" Click="Tab_Click" Tag="4">
+                    <StackPanel>
+                        <TextBlock x:Name="SettingsIcon" Text="⚙️" FontSize="20" HorizontalAlignment="Center" 
+                                   Foreground="{StaticResource InactiveTabColor}" Margin="0,0,0,4"/>
+                        <TextBlock x:Name="SettingsLabel" Text="Settings" FontSize="11" HorizontalAlignment="Center" 
+                                   Foreground="{StaticResource InactiveTabColor}"/>
+                    </StackPanel>
+                </Button>
+            </UniformGrid>
         </Border>
     </Grid>
 </Window>

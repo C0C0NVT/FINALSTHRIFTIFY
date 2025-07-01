@@ -7,91 +7,202 @@
         ResizeMode="NoResize"
         Background="#5F9F7B">
     <Window.Resources>
-        <Style x:Key="RoundButtonStyle" TargetType="Button">
-            <Setter Property="Background">
-                <Setter.Value>
-                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                        <GradientStop Color="#45A176" Offset="0"/>
-                        <GradientStop Color="#193B2B" Offset="1"/>
-                    </LinearGradientBrush>
-                </Setter.Value>
-            </Setter>
-            <Setter Property="Foreground" Value="White"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Padding" Value="12"/>
+        <!-- Color Resources -->
+        <SolidColorBrush x:Key="BackgroundColor" Color="#5F9F7B"/>
+        <SolidColorBrush x:Key="WhiteColor" Color="White"/>
+        <SolidColorBrush x:Key="LinkColor" Color="#193B2B"/>
+        <SolidColorBrush x:Key="PlaceholderColor" Color="#AAAAAA"/>
+
+        <!-- Button Gradient -->
+        <LinearGradientBrush x:Key="ButtonGradient" StartPoint="0,0" EndPoint="1,0">
+            <GradientStop Color="#45A176" Offset="0"/>
+            <GradientStop Color="#193B2B" Offset="1"/>
+        </LinearGradientBrush>
+
+        <!-- Styles -->
+        <Style x:Key="LogoStyle" TargetType="TextBlock">
+            <Setter Property="FontFamily" Value="Segoe UI"/>
             <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="FontSize" Value="32"/>
+            <Setter Property="Foreground" Value="{StaticResource WhiteColor}"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+        </Style>
+
+        <Style x:Key="TaglineStyle" TargetType="TextBlock">
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Foreground" Value="{StaticResource WhiteColor}"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+        </Style>
+
+        <Style x:Key="StyledButton" TargetType="Button">
+            <Setter Property="Background" Value="{StaticResource ButtonGradient}"/>
+            <Setter Property="Foreground" Value="{StaticResource WhiteColor}"/>
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Border Background="{TemplateBinding Background}" CornerRadius="25">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <Border Background="{TemplateBinding Background}" 
+                                CornerRadius="20" 
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" 
+                                            VerticalAlignment="Center"/>
                         </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="RenderTransform">
+                                    <Setter.Value>
+                                        <TranslateTransform Y="-2"/>
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
         </Style>
 
-        <Style x:Key="RoundedTextBoxStyle" TargetType="TextBox">
-            <Setter Property="Background" Value="#F5F5F5"/>
-            <Setter Property="Foreground" Value="#333333"/>
-            <Setter Property="BorderBrush" Value="#A3E4D7"/>
-            <Setter Property="BorderThickness" Value="2"/>
-            <Setter Property="Padding" Value="10"/>
-            <Setter Property="FontSize" Value="16"/>
-            <Setter Property="Height" Value="45"/>
+        <Style x:Key="RoundedTextBox" TargetType="TextBox">
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Padding" Value="15,10,35,10"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Background" Value="White"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="TextBox">
                         <Border Background="{TemplateBinding Background}" 
-                                BorderBrush="{TemplateBinding BorderBrush}" 
-                                BorderThickness="{TemplateBinding BorderThickness}"
-                                CornerRadius="25">
-                            <ScrollViewer x:Name="PART_ContentHost" Margin="{TemplateBinding Padding}"/>
+                                CornerRadius="20" 
+                                Padding="{TemplateBinding Padding}">
+                            <ScrollViewer x:Name="PART_ContentHost"/>
                         </Border>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
         </Style>
+
+        <!-- Loading Animation -->
+        <Storyboard x:Key="LoadingAnimation" RepeatBehavior="Forever">
+            <DoubleAnimation Storyboard.TargetName="LoadingEllipse"
+                           Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
+                           From="0" To="360" Duration="0:0:1"/>
+        </Storyboard>
     </Window.Resources>
 
-    <Grid>
-        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Width="300">
-            <TextBlock Text="Thriftify" 
-                       Foreground="White" 
-                       FontSize="32" 
-                       FontWeight="Bold" 
-                       HorizontalAlignment="Center"
-                       Margin="0,0,0,30"/>
+    <Grid Background="{StaticResource BackgroundColor}">
+        <!-- Page 1: Welcome Screen -->
+        <Grid x:Name="Page1" Visibility="Visible">
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                <TextBlock Text="Thriftify" Style="{StaticResource LogoStyle}" Margin="0,0,0,8"/>
+                <TextBlock Text="A MOBILE BUDGETING APP" Style="{StaticResource TaglineStyle}" Margin="0,0,0,20"/>
+                <Button Content="SIGN IN" Style="{StaticResource StyledButton}" 
+                        Width="200" Height="40" Click="SignIn_Click"/>
+            </StackPanel>
+        </Grid>
 
-            <TextBlock Text="A MOBILE BUDGETING APP" 
-                       Foreground="#A3E4D7" 
-                       FontSize="16"
-                       HorizontalAlignment="Center"
-                       Margin="0,0,0,40"/>
+        <!-- Page 2: Loading Screen -->
+        <Grid x:Name="Page2" Visibility="Collapsed">
+            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                <TextBlock Text="Thriftify" Style="{StaticResource LogoStyle}" Margin="0,0,0,8"/>
+                <TextBlock Text="A MOBILE BUDGETING APP" Style="{StaticResource TaglineStyle}" Margin="0,0,0,24"/>
+                <Ellipse x:Name="LoadingEllipse" Width="40" Height="40" 
+                         Stroke="White" StrokeThickness="4" StrokeDashArray="10,5"
+                         RenderTransformOrigin="0.5,0.5">
+                    <Ellipse.RenderTransform>
+                        <RotateTransform/>
+                    </Ellipse.RenderTransform>
+                </Ellipse>
+            </StackPanel>
+        </Grid>
 
-            <TextBox x:Name="UsernameTextBox" 
-                     Margin="0,0,0,20"
-                     Text=""
-                     Foreground="#333333" Height="26"/>
+        <!-- Page 3: Sign In Screen -->
+        <Grid x:Name="Page3" Visibility="Collapsed">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <StackPanel Margin="50,20,50,20">
+                    <TextBlock Text="Thriftify" Style="{StaticResource LogoStyle}" 
+                              HorizontalAlignment="Left" Margin="0,0,0,20"/>
+                    <TextBlock Text="Hello" FontFamily="Segoe UI" FontSize="20" 
+                              Foreground="White" HorizontalAlignment="Left" Margin="0,0,0,4"/>
+                    <TextBlock Text="Sign in to your account" FontFamily="Segoe UI" FontSize="13" 
+                              Foreground="White" HorizontalAlignment="Left" Margin="0,0,0,20"/>
 
-            <PasswordBox x:Name="PasswordBox" 
-                         Margin="0,0,0,20" Height="30"/>
+                    <!-- Username Input -->
+                    <Grid Margin="0,0,0,15" Width="250" HorizontalAlignment="Left">
+                        <TextBox x:Name="UsernameTextBox" Style="{StaticResource RoundedTextBox}" 
+                                 GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus"/>
+                        <TextBlock x:Name="UsernamePlaceholder" Text="Username" 
+                                  FontFamily="Segoe UI" FontSize="13" 
+                                  Foreground="{StaticResource PlaceholderColor}"
+                                  IsHitTestVisible="False" 
+                                  Margin="15,10,0,0"/>
+                        <Button Content="✕" HorizontalAlignment="Right" VerticalAlignment="Center" 
+                                Margin="0,0,10,0" Background="Transparent" BorderThickness="0"
+                                Foreground="{StaticResource PlaceholderColor}" FontSize="12"
+                                Click="ClearUsername_Click" Cursor="Hand"/>
+                    </Grid>
 
-            <Button x:Name="LoginButton" 
-                    Content="SIGN IN" 
-                    Style="{StaticResource RoundButtonStyle}"
-                    Height="50" 
-                    Margin="0,0,0,15"
-                    Click="LoginButton_Click"/>
+                    <!-- Password Input -->
+                    <Grid Margin="0,0,0,15" Width="250" HorizontalAlignment="Left">
+                        <PasswordBox x:Name="PasswordBox" FontFamily="Segoe UI" FontSize="13" 
+                                    Padding="15,10,35,10" BorderThickness="0" Background="White"
+                                    GotFocus="PasswordBox_GotFocus" LostFocus="PasswordBox_LostFocus">
+                            <PasswordBox.Template>
+                                <ControlTemplate TargetType="PasswordBox">
+                                    <Border Background="{TemplateBinding Background}" 
+                                            CornerRadius="20" 
+                                            Padding="{TemplateBinding Padding}">
+                                        <ScrollViewer x:Name="PART_ContentHost"/>
+                                    </Border>
+                                </ControlTemplate>
+                            </PasswordBox.Template>
+                        </PasswordBox>
+                        <TextBlock x:Name="PasswordPlaceholder" Text="Password" 
+                                  FontFamily="Segoe UI" FontSize="13" 
+                                  Foreground="{StaticResource PlaceholderColor}"
+                                  IsHitTestVisible="False" 
+                                  Margin="15,10,0,0"/>
+                        <Button Content="✕" HorizontalAlignment="Right" VerticalAlignment="Center" 
+                                Margin="0,0,10,0" Background="Transparent" BorderThickness="0"
+                                Foreground="{StaticResource PlaceholderColor}" FontSize="12"
+                                Click="ClearPassword_Click" Cursor="Hand"/>
+                    </Grid>
 
-            <TextBlock x:Name="ErrorTextBlock" 
-                       Foreground="#FF6B6B" 
-                       TextWrapping="Wrap"
-                       Margin="0,15,0,0"
-                       FontSize="14"
-                       HorizontalAlignment="Center"
-                       Visibility="Collapsed"/>
-        </StackPanel>
+                    <!-- Forgot Password -->
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,24">
+                        <TextBlock Text="Forgot your Password? " FontFamily="Segoe UI" FontSize="13" 
+                                  Foreground="White"/>
+                        <TextBlock Text="Click here" FontFamily="Segoe UI" FontSize="13" FontWeight="Bold"
+                                  Foreground="{StaticResource LinkColor}" Cursor="Hand" 
+                                  TextDecorations="Underline" MouseLeftButtonUp="ForgotPassword_Click"/>
+                    </StackPanel>
+
+                    <!-- Sign In Button -->
+                    <Button Content="SIGN IN" Style="{StaticResource StyledButton}" 
+                            Width="250" Height="40" Click="SignInSubmit_Click" 
+                            HorizontalAlignment="Left" Margin="0,0,0,16"/>
+
+                    <!-- Sign Up Link -->
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                        <TextBlock Text="Don't have an account? " FontFamily="Segoe UI" FontSize="13" 
+                                  Foreground="White"/>
+                        <TextBlock Text="Sign up" FontFamily="Segoe UI" FontSize="13" FontWeight="Bold"
+                                  Foreground="{StaticResource LinkColor}" Cursor="Hand" 
+                                  TextDecorations="Underline" MouseLeftButtonUp="SignUp_Click"/>
+                    </StackPanel>
+
+                    <TextBlock x:Name="ErrorTextBlock" 
+                               Foreground="#FF6B6B" 
+                               TextWrapping="Wrap"
+                               Margin="0,15,0,0"
+                               FontSize="12"
+                               HorizontalAlignment="Left"
+                               Visibility="Collapsed"/>
+                </StackPanel>
+            </ScrollViewer>
+        </Grid>
     </Grid>
 </Window>
